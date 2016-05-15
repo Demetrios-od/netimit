@@ -85,60 +85,60 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % x=str2num(x)^2;
 % set(handles.text1,'String',x);
 
-%================ НАЧАЛО ПРОГРАММ МОДЕЛИРОВАНИЯ =====================
+%================ ГЌГЂГ—ГЂГ‹ГЋ ГЏГђГЋГѓГђГЂГЊГЊ ГЊГЋГ„Г…Г‹Г€ГђГЋГ‚ГЂГЌГ€Гџ =====================
 
-% Абоненты
+% ГЂГЎГ®Г­ГҐГ­ГІГ»
 
 status=ones(1,14);
 
-% количество абонентов
+% ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ® Г ГЎГ®Г­ГҐГ­ГІГ®Гў
 [num_abons, status(1)]=str2num(get(handles.edit1,'String'));   
 
-% вероятность появления вызова на одной итерации
-% (Умноженная на длительность вызова, дает нагрузку,
-% создаваемую одним абонентом, в эрлангах)
+% ГўГҐГ°Г®ГїГІГ­Г®Г±ГІГј ГЇГ®ГїГўГ«ГҐГ­ГЁГї ГўГ»Г§Г®ГўГ  Г­Г  Г®Г¤Г­Г®Г© ГЁГІГҐГ°Г Г¶ГЁГЁ
+% (Г“Г¬Г­Г®Г¦ГҐГ­Г­Г Гї Г­Г  Г¤Г«ГЁГІГҐГ«ГјГ­Г®Г±ГІГј ГўГ»Г§Г®ГўГ , Г¤Г ГҐГІ Г­Г ГЈГ°ГіГ§ГЄГі,
+% Г±Г®Г§Г¤Г ГўГ ГҐГ¬ГіГѕ Г®Г¤Г­ГЁГ¬ Г ГЎГ®Г­ГҐГ­ГІГ®Г¬, Гў ГЅГ°Г«Г Г­ГЈГ Гµ)
 [betta, status(2)]=str2num(get(handles.edit2,'String'));
 
-% координаты зоны перемещения абонентов, в метрах
+% ГЄГ®Г®Г°Г¤ГЁГ­Г ГІГ» Г§Г®Г­Г» ГЇГҐГ°ГҐГ¬ГҐГ№ГҐГ­ГЁГї Г ГЎГ®Г­ГҐГ­ГІГ®Гў, Гў Г¬ГҐГІГ°Г Гµ
 [movarea.xmin, status(3)]=str2num(get(handles.edit5,'String'));
 [movarea.xmax, status(4)]=str2num(get(handles.edit6,'String'));
 [movarea.ymin, status(5)]=str2num(get(handles.edit4,'String'));
 [movarea.ymax, status(6)]=str2num(get(handles.edit3,'String'));
 
-% скорость абонента, км/ч
+% Г±ГЄГ®Г°Г®Г±ГІГј Г ГЎГ®Г­ГҐГ­ГІГ , ГЄГ¬/Г·
 [speed.aver, status(7)]=str2num(get(handles.edit7,'String'));
 [speed.disp, status(8)]=str2num(get(handles.edit13,'String'));
-% переводим скорость в метров за итерацию (минуту)
-% 100 м/мин = 6 км/ч
+% ГЇГҐГ°ГҐГўГ®Г¤ГЁГ¬ Г±ГЄГ®Г°Г®Г±ГІГј Гў Г¬ГҐГІГ°Г®Гў Г§Г  ГЁГІГҐГ°Г Г¶ГЁГѕ (Г¬ГЁГ­ГіГІГі)
+% 100 Г¬/Г¬ГЁГ­ = 6 ГЄГ¬/Г·
 speed.aver=speed.aver*100/6;
 speed.disp=speed.disp*100/6;
 
-% Базовые станции
+% ГЃГ Г§Г®ГўГ»ГҐ Г±ГІГ Г­Г¶ГЁГЁ
 
-% количество БС
+% ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ® ГЃГ‘
 [NBS, status(9)]=str2num(get(handles.edit8,'String'));
-% радиус ячейки, метров
+% Г°Г Г¤ГЁГіГ± ГїГ·ГҐГ©ГЄГЁ, Г¬ГҐГІГ°Г®Гў
 [Rad, status(10)]=str2num(get(handles.edit9,'String'));
-covzone.lbcX=0;   % координаты левого нижнего угла зоны покрытия
+covzone.lbcX=0;   % ГЄГ®Г®Г°Г¤ГЁГ­Г ГІГ» Г«ГҐГўГ®ГЈГ® Г­ГЁГ¦Г­ГҐГЈГ® ГіГЈГ«Г  Г§Г®Г­Г» ГЇГ®ГЄГ°Г»ГІГЁГї
 covzone.lbcY=0;
 
-% Другие основные параметры
-maxiters=1440;      % число итераций при моделировании
-pause_duration=0.5;   % пауза между итерациями
+% Г„Г°ГіГЈГЁГҐ Г®Г±Г­Г®ГўГ­Г»ГҐ ГЇГ Г°Г Г¬ГҐГІГ°Г»
+maxiters=1440;      % Г·ГЁГ±Г«Г® ГЁГІГҐГ°Г Г¶ГЁГ© ГЇГ°ГЁ Г¬Г®Г¤ГҐГ«ГЁГ°Г®ГўГ Г­ГЁГЁ
+pause_duration=0.5;   % ГЇГ ГіГ§Г  Г¬ГҐГ¦Г¤Гі ГЁГІГҐГ°Г Г¶ГЁГїГ¬ГЁ
 
-% максимальная длительность звонка, итераций (мин)
+% Г¬Г ГЄГ±ГЁГ¬Г Г«ГјГ­Г Гї Г¤Г«ГЁГІГҐГ«ГјГ­Г®Г±ГІГј Г§ГўГ®Г­ГЄГ , ГЁГІГҐГ°Г Г¶ГЁГ© (Г¬ГЁГ­)
 [calldur.aver, status(11)]=str2num(get(handles.edit10,'String'));
 [calldur.disp, status(12)]=str2num(get(handles.edit14,'String'));
-% число несущих
+% Г·ГЁГ±Г«Г® Г­ГҐГ±ГіГ№ГЁГµ
 [Ncar, status(13)]=str2num(get(handles.edit11,'String'));
-% число каналов на несущей
+% Г·ГЁГ±Г«Г® ГЄГ Г­Г Г«Г®Гў Г­Г  Г­ГҐГ±ГіГ№ГҐГ©
 [Ncpc, status(14)]=str2num(get(handles.edit12,'String'));
 
-% Параметры визуализации
-vis.showiter=false;   % показывать номер итерации
+% ГЏГ Г°Г Г¬ГҐГІГ°Г» ГўГЁГ§ГіГ Г«ГЁГ§Г Г¶ГЁГЁ
+vis.showiter=false;   % ГЇГ®ГЄГ Г§Г»ГўГ ГІГј Г­Г®Г¬ГҐГ° ГЁГІГҐГ°Г Г¶ГЁГЁ
 vis.everyiter=100;
-vis.showmes=false;   % показывать информационные сообщения
-vis.shownet=false;   % визуализировать сотовую сеть и перемещение абонентов
+vis.showmes=false;   % ГЇГ®ГЄГ Г§Г»ГўГ ГІГј ГЁГ­ГґГ®Г°Г¬Г Г¶ГЁГ®Г­Г­Г»ГҐ Г±Г®Г®ГЎГ№ГҐГ­ГЁГї
+vis.shownet=false;   % ГўГЁГ§ГіГ Г«ГЁГ§ГЁГ°Г®ГўГ ГІГј Г±Г®ГІГ®ГўГіГѕ Г±ГҐГІГј ГЁ ГЇГҐГ°ГҐГ¬ГҐГ№ГҐГ­ГЁГҐ Г ГЎГ®Г­ГҐГ­ГІГ®Гў
 vis.showbar=true;
 
 
@@ -153,7 +153,7 @@ end
 
 %--------------------- Processing the results --------------------------
 
-% вывод числа событий в Listbox
+% ГўГ»ГўГ®Г¤ Г·ГЁГ±Г«Г  Г±Г®ГЎГ»ГІГЁГ© Гў Listbox
 
 strs=strcat('ABON_COME:  ',num2str(MSG.ABON_COME));
 strs=strcat(strs,'|ABON_LEAVE:',num2str(MSG.ABON_LEAVE));
@@ -167,7 +167,7 @@ strs=strcat(strs,'|CALL_REL_HAND:',num2str(MSG.CALL_REL_HAND));
 strs=strcat(strs,'|CALL_REL_LEAVE:',num2str(MSG.CALL_REL_LEAVE));
 set(handles.listbox1,'String',strs);
 
-% вывод вероятности отказа в надпись
+% ГўГ»ГўГ®Г¤ ГўГҐГ°Г®ГїГІГ­Г®Г±ГІГЁ Г®ГІГЄГ Г§Г  Гў Г­Г Г¤ГЇГЁГ±Гј
 p=(MSG.CALL_REQ_FAIL + MSG.CALL_REL_HAND)*100 / (MSG.CALL_REQ_SUC + MSG.CALL_REQ_FAIL);
 set(handles.text1,'String',strcat('Call loss probability: ',num2str(p,'%5.2f'),'%'));
 
@@ -177,7 +177,7 @@ set(handles.text19,'String',strcat('Cell load: ',num2str(Ac,'%5.2f'),'Erl'));
 
 end
 
-%================= КОНЕЦ ПРОГРАММ МОДЕЛИРОВАНИЯ ====================
+%================= ГЉГЋГЌГ…Г– ГЏГђГЋГѓГђГЂГЊГЊ ГЊГЋГ„Г…Г‹Г€ГђГЋГ‚ГЂГЌГ€Гџ ====================
 
 
 function edit1_Callback(hObject, eventdata, handles)
